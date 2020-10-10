@@ -93,3 +93,14 @@ class Sonda(Model):
             )
 
         self._direcao_cardinal = direcao_cardinal
+
+    def alterar_posicoes(self, posicao_x, posicao_y, direcao_cardinal):
+        self.posicao_x = posicao_x
+        self.posicao_y = posicao_y
+        self.direcao_cardinal = direcao_cardinal
+
+    def __str__(self):
+        return f"Status da sonda: " \
+               f"Posicao X = {self.posicao_x}. " \
+               f"Posicao Y = {self.posicao_y}. " \
+               f"Direção Cardinal = {self.direcao_cardinal}"

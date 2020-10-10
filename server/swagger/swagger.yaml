@@ -54,7 +54,12 @@ definitions:
       sondas:
         type: array
         items:
-          $ref: '#/definitions/Sonda'
+          type: "object"
+          properties:
+            sonda_inicial:
+                $ref: '#/definitions/Sonda'
+            movimentos:
+                $ref: '#/definitions/Movimento'
   Planalto:
     type: "object"
     required:
@@ -95,3 +100,12 @@ definitions:
       direcao_cardinal: "N"
       posicao_x: 1
       posicao_y: 5
+  Movimento:
+    type: "array"
+    items:
+      type: "string"
+      example: "R"
+      enum:
+        - "L"
+        - "R"
+        - "M"
