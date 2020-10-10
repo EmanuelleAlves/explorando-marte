@@ -24,8 +24,8 @@ def realizar_comando(body):
             erros.append("Você tentou aterrisar a sonda fora do planalto. Vamos fingir que nada aconteceu...")
 
         sondas_final.append({
-            "Sonda " + str(count): str(sonda_obj),
-            "Avisos: ": erros if erros else "Não houve nenhum problema, conseguimos realizar todos movimentos!"
+            "sonda": str(sonda_obj),
+            "avisos": erros if erros else "Não houve nenhum problema, conseguimos realizar todos movimentos!"
         })
 
     return sondas_final, 200

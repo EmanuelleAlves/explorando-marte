@@ -41,7 +41,7 @@ paths:
         "200":
           description: "Comandos finalizados com sucesso!"
           schema:
-            $ref: "#/definitions/Planalto"
+            $ref: "#/definitions/Response"
         "405":
           description: "Input inválido."
       x-swagger-router-controller: "server.controllers.comandos_controller"
@@ -109,3 +109,17 @@ definitions:
         - "L"
         - "R"
         - "M"
+  Response:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        avisos:
+          type: "array"
+          items:
+            type: "string"
+            example: "Não houve nenhum problema, conseguimos realizar todos movimentos!"
+        sonda:
+          type: "string"
+          example: "Status da sonda: Posicao X = 5. Posicao Y = 1. Direção Cardinal = E"
+
