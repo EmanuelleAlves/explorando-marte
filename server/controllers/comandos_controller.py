@@ -6,4 +6,4 @@ def post_comandos(body):
     :param body: Objeto necessário para realizar os comandos
     :type body: dict
     """
-    return controle_service.realizar_comando(body)
+    return controle_service.realizar_comando(body), 200

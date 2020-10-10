@@ -25,10 +25,10 @@ def realizar_comando(body):
 
         sondas_final.append({
             "sonda": str(sonda_obj),
-            "avisos": erros if erros else "Não houve nenhum problema, conseguimos realizar todos movimentos!"
+            "avisos": erros if erros else ["Não houve nenhum problema, conseguimos realizar todos movimentos!"]
         })
 
-    return sondas_final, 200
+    return sondas_final
 
 
 def realizar_movimento(sonda_obj, planalto, movimento, erros):
