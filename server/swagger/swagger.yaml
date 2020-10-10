@@ -48,6 +48,9 @@ paths:
 definitions:
   Comandos:
     type: "object"
+    required:
+    - "planalto"
+    - "sondas"
     properties:
       planalto:
         $ref: '#/definitions/Planalto'
@@ -55,6 +58,9 @@ definitions:
         type: array
         items:
           type: "object"
+          required:
+            - "sonda_inicial"
+            - "movimentos"
           properties:
             sonda_inicial:
                 $ref: '#/definitions/Sonda'
