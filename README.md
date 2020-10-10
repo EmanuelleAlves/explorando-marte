@@ -71,3 +71,9 @@ python -m server
 ```
 http://localhost:8080/v1/ui/
 ```
+
+* Para rodar os testes unitários
+```
+pip install tox
+tox
+```
