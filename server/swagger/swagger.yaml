@@ -1,0 +1,131 @@
+---
+swagger: "2.0"
+info:
+  description: "API para criar planaltos, onde serão incluídas sondas que poderão\
+    \ ser movimentadas."
+  version: "1.0.0"
+  title: "Explorando Marte"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "emanuelle.de.pa@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:8080"
+basePath: "/v1"
+tags:
+- name: "enviar-comando"
+  description: "Endpoint para enviar os comandos desejados"
+schemes:
+- "https"
+- "http"
+paths:
+  /enviar-comando:
+    post:
+      tags:
+      - "enviar-comando"
+      summary: "Envia um dicionário com os comandos desejados."
+      operationId: "post_comandos"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Objeto necessário para realizar os comandos"
+        required: true
+        schema:
+          $ref: "#/definitions/Comandos"
+      responses:
+        "200":
+          description: "Comandos finalizados com sucesso!"
+          schema:
+            $ref: "#/definitions/Response"
+        "405":
+          description: "Input inválido."
+      x-swagger-router-controller: "server.controllers.comandos_controller"
+definitions:
+  Comandos:
+    type: "object"
+    required:
+    - "planalto"
+    - "sondas"
+    properties:
+      planalto:
+        $ref: '#/definitions/Planalto'
+      sondas:
+        type: array
+        items:
+          type: "object"
+          required:
+            - "sonda_inicial"
+            - "movimentos"
+          properties:
+            sonda_inicial:
+                $ref: '#/definitions/Sonda'
+            movimentos:
+                $ref: '#/definitions/Movimento'
+  Planalto:
+    type: "object"
+    required:
+    - "tamanho_x"
+    - "tamanho_y"
+    properties:
+      tamanho_x:
+        type: "integer"
+        format: "int64"
+      tamanho_y:
+        type: "integer"
+        format: "int64"
+    example:
+      tamanho_x: 6
+      tamanho_y: 5
+  Sonda:
+    type: "object"
+    required:
+    - "direcao_cardinal"
+    - "posicao_x"
+    - "posicao_y"
+    properties:
+      posicao_x:
+        type: "integer"
+        format: "int64"
+      posicao_y:
+        type: "integer"
+        format: "int64"
+      direcao_cardinal:
+        type: "string"
+        description: "Direção em que a sonda está apontando"
+        enum:
+        - "N"
+        - "E"
+        - "S"
+        - "W"
+    example:
+      direcao_cardinal: "N"
+      posicao_x: 1
+      posicao_y: 5
+  Movimento:
+    type: "array"
+    items:
+      type: "string"
+      example: "R"
+      enum:
+        - "L"
+        - "R"
+        - "M"
+  Response:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        avisos:
+          type: "array"
+          items:
+            type: "string"
+            example: "Não houve nenhum problema, conseguimos realizar todos movimentos!"
+        sonda:
+          type: "string"
+          example: "Status da sonda: Posicao X = 5. Posicao Y = 1. Direção Cardinal = E"
+
