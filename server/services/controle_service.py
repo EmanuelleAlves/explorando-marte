@@ -1,4 +1,4 @@
-from server.services import planalto_service, sonda_service, utils
+from server.services import planalto_service, sonda_service
 
 
 def realizar_comando(body):
@@ -12,14 +12,18 @@ def realizar_comando(body):
 
     for count, sonda in enumerate(sondas, start=1):
         erros = []
-        sonda_obj = sonda_service.criar_sonda(sonda['sonda_inicial'])
-        movimento_valido, erro = utils.validar_movimento(sonda_obj.posicao_x,
-                                                         sonda_obj.posicao_y,
-                                                         planalto.tamanho_x,
-                                                         planalto.tamanho_y)
+        movimento_valido, erro = planalto.verificar_limite(sonda['sonda_inicial']['posicao_x'],
+                                                           sonda['sonda_inicial']['posicao_y'])
+
+        sonda_obj = sonda['sonda_inicial']
+
         if movimento_valido:
+            sonda_obj = sonda_service.criar_sonda(planalto, sonda['sonda_inicial'])
             for movimento in sonda['movimentos']:
-                realizar_movimento(sonda_obj, planalto, movimento, erros)
+                movimento_valido, erro = sonda_obj.movimentar_sonda(movimento)
+
+                if not movimento_valido:
+                    erros.append(erro)
         else:
             erros.append("Você tentou aterrisar a sonda fora do planalto. Vamos fingir que nada aconteceu...")
 
@@ -29,23 +33,3 @@ def realizar_comando(body):
         })
 
     return sondas_final
-
-
-def realizar_movimento(sonda_obj, planalto, movimento, erros):
-    proximo_x, proximo_y, proxima_direcao = utils.proximo_movimento(sonda_obj.posicao_x,
-                                                                    sonda_obj.posicao_y,
-                                                                    sonda_obj.direcao_cardinal,
-                                                                    movimento
-                                                                    )
-
-    movimento_valido, erro = utils.validar_movimento(proximo_x,
-                                                     proximo_y,
-                                                     planalto.tamanho_x,
-                                                     planalto.tamanho_y)
-
-    if movimento_valido:
-        sonda_obj.alterar_posicoes(proximo_x, proximo_y, proxima_direcao)
-    else:
-        erros.append(erro)
-
-    return sonda_obj, erros

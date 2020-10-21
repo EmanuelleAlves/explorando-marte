@@ -58,3 +58,11 @@ class Planalto(Model):
         """
 
         self._tamanho_y = tamanho_y
+
+    def verificar_limite(self, posicao_x, posicao_y):
+        if posicao_x < 0 or posicao_x > self.tamanho_x:
+            return False, "Essa posição X não está disponível."
+        if posicao_y < 0 or posicao_y > self.tamanho_y:
+            return False, "Essa posição Y não está disponível."
+
+        return True, None

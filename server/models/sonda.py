@@ -1,13 +1,23 @@
 from __future__ import absolute_import
 from server.models.base_model_ import Model
+from server.models.planalto import Planalto
 from server import util
 
 
+movimentos = {
+    "N": {"L": "W", "R": "E", "M": {"y": 1, "x": 0}},
+    "E": {"L": "N", "R": "S", "M": {"y": 0, "x": 1}},
+    "S": {"L": "E", "R": "W", "M": {"y": -1, "x": 0}},
+    "W": {"L": "S", "R": "N", "M": {"y": 0, "x": -1}}
+}
+
+
 class Sonda(Model):
-    def __init__(self, posicao_x: int = None, posicao_y: int = None, direcao_cardinal: str = None):
+    def __init__(self, planalto: Planalto, posicao_x: int = None, posicao_y: int = None, direcao_cardinal: str = None):
         self._posicao_x = posicao_x
         self._posicao_y = posicao_y
         self._direcao_cardinal = direcao_cardinal
+        self._planalto = planalto
 
     @classmethod
     def from_dict(cls, dikt) -> 'Sonda':
@@ -94,7 +104,7 @@ class Sonda(Model):
 
         self._direcao_cardinal = direcao_cardinal
 
-    def alterar_posicoes(self, posicao_x, posicao_y, direcao_cardinal):
+    def _alterar_posicoes(self, posicao_x, posicao_y, direcao_cardinal):
         self.posicao_x = posicao_x
         self.posicao_y = posicao_y
         self.direcao_cardinal = direcao_cardinal
@@ -104,3 +114,32 @@ class Sonda(Model):
                f"Posicao X = {self.posicao_x}. " \
                f"Posicao Y = {self.posicao_y}. " \
                f"Direção Cardinal = {self.direcao_cardinal}"
+
+    def _proximo_movimento(self, movimento):
+        """
+            Verifica qual o próximo movimento
+        """
+
+        direcao_atual = self.direcao_cardinal
+        x_atual = self.posicao_x
+        y_atual = self.posicao_y
+
+        if movimento == "M":
+            x_atual = self.posicao_x + movimentos[self.direcao_cardinal][movimento]['x']
+            y_atual = self.posicao_y + movimentos[self.direcao_cardinal][movimento]['y']
+        else:
+            direcao_atual = movimentos[self.direcao_cardinal][movimento]
+
+        return x_atual, y_atual, direcao_atual
+
+    def movimentar_sonda(self, movimento):
+        proximo_x, proximo_y, proxima_direcao = self._proximo_movimento(movimento)
+
+        movimento_valido, erro = self._planalto.verificar_limite(proximo_x,
+                                                                 proximo_y)
+
+        if movimento_valido:
+            self._alterar_posicoes(proximo_x, proximo_y, proxima_direcao)
+            return True, None
+
+        return False, erro

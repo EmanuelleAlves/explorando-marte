@@ -3,7 +3,8 @@
 from __future__ import absolute_import
 
 from flask import json
-
+from server.models.planalto import Planalto
+from server.models.sonda import Sonda
 from server.test import BaseTestCase
 
 
@@ -69,7 +70,7 @@ class TestComandosController(BaseTestCase):
 
         response_esperado = [{
             "avisos": ["Você tentou aterrisar a sonda fora do planalto. Vamos fingir que nada aconteceu..."],
-            "sonda": "Status da sonda: Posicao X = 8. Posicao Y = 3. Direção Cardinal = E"
+            "sonda": '''{"direcao_cardinal": "E", "posicao_x": 8, "posicao_y": 3}'''
         }]
 
         response = self.client.open(
@@ -104,14 +105,14 @@ class TestComandosController(BaseTestCase):
 
         response_esperado = [{
             "avisos": [
-                "A movimentação no eixo Y é inválida. Esse movimento foi ignorado.",
-                "A movimentação no eixo Y é inválida. Esse movimento foi ignorado.",
-                "A movimentação no eixo Y é inválida. Esse movimento foi ignorado.",
-                "A movimentação no eixo Y é inválida. Esse movimento foi ignorado.",
-                "A movimentação no eixo Y é inválida. Esse movimento foi ignorado.",
-                "A movimentação no eixo Y é inválida. Esse movimento foi ignorado.",
-                "A movimentação no eixo Y é inválida. Esse movimento foi ignorado.",
-                "A movimentação no eixo Y é inválida. Esse movimento foi ignorado."
+                "Essa posição Y não está disponível.",
+                "Essa posição Y não está disponível.",
+                "Essa posição Y não está disponível.",
+                "Essa posição Y não está disponível.",
+                "Essa posição Y não está disponível.",
+                "Essa posição Y não está disponível.",
+                "Essa posição Y não está disponível.",
+                "Essa posição Y não está disponível."
             ],
             "sonda": "Status da sonda: Posicao X = 1. Posicao Y = 5. Direção Cardinal = N"
         }]
@@ -148,7 +149,7 @@ class TestComandosController(BaseTestCase):
 
         response_esperado = [{
             "avisos": [
-                "A movimentação no eixo X é inválida. Esse movimento foi ignorado."
+                "Essa posição X não está disponível."
             ],
             "sonda": "Status da sonda: Posicao X = 0. Posicao Y = 1. Direção Cardinal = W"
         }]
@@ -159,6 +160,24 @@ class TestComandosController(BaseTestCase):
             data=json.dumps(body),
             content_type='application/json')
         self.assertEqual(response.json, response_esperado)
+
+    def test_unitario(self):
+        planalto = Planalto(5, 5)
+        sonda = Sonda(planalto, 1, 2, "N")
+
+        sonda.movimentar_sonda("L")
+        sonda.movimentar_sonda("M")
+        sonda.movimentar_sonda("L")
+        sonda.movimentar_sonda("M")
+        sonda.movimentar_sonda("L")
+        sonda.movimentar_sonda("M")
+        sonda.movimentar_sonda("L")
+        sonda.movimentar_sonda("M")
+        sonda.movimentar_sonda("M")
+
+        self.assertEqual(sonda.posicao_x, 1)
+        self.assertEqual(sonda.posicao_y, 3)
+        self.assertEqual(sonda.direcao_cardinal, "N")
 
 
 if __name__ == '__main__':
